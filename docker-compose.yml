@@ -1,0 +1,37 @@
+volumes:
+  database:
+    driver: local
+
+  php-sessions:
+    driver: local
+
+services:
+  site:
+    build: ./
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www/html
+      - php-sessions:/var/www/html/sessions
+    depends_on:
+      - database
+
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: 'sotero02_multix'
+      MYSQL_USER: 'sotero02_admin'
+      MYSQL_PASSWORD: 'Quick*2019'
+    ports:
+      - 3306:3306
+    volumes:
+      - database:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+    ports:
+      - 8081:80
